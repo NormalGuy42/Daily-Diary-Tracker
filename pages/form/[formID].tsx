@@ -1,7 +1,7 @@
 import ColorPicker from "../../app/components/colorPicker";
 import '@/app/globals.css';
 import { useEffect, useState } from "react";
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import { setCookie } from 'nookies';
 import { Providers } from "@/app/providers";
 import { AuthProvider } from "@/app/authprovider";
@@ -11,26 +11,8 @@ interface FormCodeProps{
   codeData: [FormCode];
 }
 
-export const getStaticPaths:GetStaticPaths = async ()=>{
-  const res = await fetch("https://m1000.me/diary/api/allFormID.php",{
-      headers:{
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Authorization": `Bearer ${process.env.API_KEY}`,
-      }
-  });
-  const data = await res.json();
-  const paths = data.map((formID:FormCode) =>{
-      return{
-          params: {formID: formID.code}
-      }
-  })
-  return{
-      paths: paths,
-      fallback: false,
-  }
-}
-export const getStaticProps:GetStaticProps = async (context)=>{
+
+export const getServerSideProps:GetServerSideProps = async (context)=>{
   const id = context.params!.formID;
 
   const res = await fetch("https://m1000.me/diary/api/getFormID.php?id=" + id,{
@@ -64,6 +46,7 @@ export default function Form(form:FormCodeProps) {
     date: data.date,
   });
   const [formData, setFormData] = useState<FormType>(emptyForm);
+  const [isLoading, setIsLoading] = useState(false);
   //Check if form was saved in local storage
   const [restartValue,setRestartValue] = useState(false);
   
@@ -94,6 +77,7 @@ export default function Form(form:FormCodeProps) {
   async function handleSubmit(e:React.FormEvent<HTMLFormElement>){
 
     e.preventDefault();
+    setIsLoading(true);
 
     try{
       const res = await fetch("https://m1000.me/diary/api/api-diary.php", {
@@ -116,6 +100,11 @@ export default function Form(form:FormCodeProps) {
             path: '/', // Cookie is accessible across all pages
           });
           window.location.href = "/";
+        }else{
+          setTimeout(()=>{
+            setIsLoading(false);
+          },2000)
+
         }
         
       }
@@ -162,7 +151,7 @@ export default function Form(form:FormCodeProps) {
                   required
             >
             </textarea>
-            <button className="px-4 my-1 py-4 font-bold text-2xl text-white w-full bg-blue-500 hover:bg-blue-700" type="submit">Record this day</button>
+            <button className="px-4 my-1 py-4 font-bold text-2xl text-white w-full bg-blue-500 hover:bg-blue-700" type="submit">{isLoading ? 'Loading...' : 'Record this day'}</button>
           </form>
         </main>
       </AuthProvider>

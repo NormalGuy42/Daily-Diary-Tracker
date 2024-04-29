@@ -11,7 +11,7 @@ function PasswordInput(){
 
   return(
     <div className='relative'>
-      <input className="shadow appearance-none border my-1 rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+      <input className="shadow appearance-none border my-1 rounded w-full py-4 px-3 leading-tight focus:outline-none focus:shadow-outline" 
         type={hide? "password" : "text"} 
         placeholder="Enter password" 
         name="password" 
@@ -99,7 +99,7 @@ export default function Login(){
             {error && <StatusMessage status={false} message={errorMessage}/>}
 
             <form onSubmit={login}>
-              <input className="shadow appearance-none border my-1 rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+              <input className="shadow appearance-none border my-1 rounded w-full py-4 px-3 leading-tight focus:outline-none focus:shadow-outline" 
                 type="text" 
                 placeholder="Enter ID" 
                 name="userID" 

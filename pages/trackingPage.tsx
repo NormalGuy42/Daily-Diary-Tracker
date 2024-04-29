@@ -75,7 +75,6 @@ export default function TrackingPage(){
     return(
         <Providers>
             <AuthProvider>
-                <link rel="icon" href="logo.png" sizes="any" />
                 <div className="w-full min-h-screen">
                     <Header>
                         <ReturnBtn/>

@@ -21,6 +21,7 @@
   --return-tooltip: lightgrey;
 
   --input-color: rgb(55 65 81 / var(--tw-text-opacity));
+  --record-page-bg: transparent;
 
   --red: red;
   --orange: orange;
@@ -39,6 +40,7 @@
 
     --tooltip-bg: rgb(36, 36, 36);
     --return-tooltip: rgb(20, 20, 20);
+    --record-page-bg: rgb(0, 0, 0);
   }
 }
 
@@ -51,6 +53,7 @@
   --tooltip-bg: rgb(36, 36, 36);
   --return-tooltip: rgb(20, 20, 20);
   --input-color: rgb(255, 255, 255);
+  --record-page-bg: rgb(0, 0, 0);
 }
  
 body {
@@ -179,7 +182,7 @@ input,textarea{
   font-size: 32px;
 }
 .giantEmoji{
-  font-size: 175px;
+  font-size: 165px;
 }
 /*Emoji Button end*/
 
@@ -197,6 +200,7 @@ input,textarea{
 }
 .returnTooltip span{
   font-size: 16px;
+  margin-left: 4px;
 }
 .returnTooltip .toolElement{
   display: flex;
@@ -257,6 +261,10 @@ input,textarea{
 }
 /*Record Box end*/
 
+/*Record Page*/
+.record-page{
+  background-color: var(--record-page-bg);
+}
 .emotion-grid{
   grid-template-columns: repeat(30,8px);
 }

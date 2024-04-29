@@ -1,7 +1,7 @@
 import Header from '@/app/components/header';
 import '../../app/globals.css'
 import ReturnBtn from '@/app/components/buttons/returnBtn';
-import { GetStaticPaths, GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import EmojiBtn from '@/app/components/buttons/emojiBtn';
 import ColorBtn from '@/app/components/buttons/colorBtn';
 import LikeBtn from '@/app/components/buttons/likeBtn';
@@ -15,26 +15,7 @@ interface RecordProps{
     idList: Array<string>;
 }
 
-export const getStaticPaths:GetStaticPaths = async ()=>{
-    const res = await fetch("https://m1000.me/diary/api/api-diary.php",{
-        headers:{
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Authorization": `Bearer ${process.env.API_KEY}`,
-        }
-    });
-    const data = await res.json();
-    const paths = data.map((record:RecordType) =>{
-        return{
-            params: {recordID: record.id.toString()}
-        }
-    })
-    return{
-        paths: paths,
-        fallback: false,
-    }
-}
-export const getStaticProps:GetStaticProps = async (context)=>{
+export const getServerSideProps:GetServerSideProps = async (context)=>{
     const id = context.params!.recordID;
 
     const res = await fetch("https://m1000.me/diary/api/diary-data.php?id=" + id,{
@@ -87,7 +68,7 @@ const RecordPage = (record: RecordProps)=>{
     return(
         <Providers>
             <AuthProvider>
-                <div className="w-full component-bg min-h-screen">
+                <div className="w-full min-h-screen record-page">
                     <Header>
                         <ColorBtn index={data.color}/>
                         <EmojiBtn icon={data.emoji}/>

@@ -27,7 +27,7 @@ export default function Changelog(){
             <p className='mx-5'>A NextJS project that allows me to keep data about my days and the overall emotion about the day through the year.</p>
 
 
-            <h2 className='text-xl bold m-5 font-bold'>v.1.0.0 - 2024-04-</h2>
+            <h2 className='text-xl bold m-5 font-bold'>v.1.0.0 - 2024-04-30</h2>
 
             <p className='mx-5'>
             -<strong>Added favorites:</strong> Can save special records by liking records  <br />
