@@ -6,7 +6,7 @@ import EmojiBtn from '@/app/components/buttons/emojiBtn';
 import ColorBtn from '@/app/components/buttons/colorBtn';
 import LikeBtn from '@/app/components/buttons/likeBtn';
 import { formatDate} from '@/app/components/methods/date';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Providers } from '@/app/providers';
 import { AuthProvider } from '@/app/authprovider';
 
@@ -52,10 +52,35 @@ const RecordPage = (record: RecordProps)=>{
     const currentIndex = idList.indexOf(data.id.toString())!;
 
     let prevIndex = currentIndex > 0? currentIndex-1 : idList.length-1;
-    let nextIndex = currentIndex < idList.length? currentIndex+1 : 0;
+    let nextIndex = currentIndex < idList.length-1? currentIndex+1 : 0;
     // Get the IDs for the previous page and the next page
     const previousID = idList[prevIndex]; 
     const nextID = idList[nextIndex];
+
+
+    //For mobile accessibility
+    const touchStart = useRef<number | null>(null);
+    const touchEnd = useRef<number | null>(null);
+    const minSwipeDistance = 50;
+
+    const onTouchStart = (e: React.TouchEvent)=>{
+        touchEnd.current = null;
+        touchStart.current = e.targetTouches[0].clientX;
+    }
+    const onTouchMove = (e: React.TouchEvent)=>{
+        touchEnd.current = e.targetTouches[0].clientX;;
+    }
+    const onTouchEnd = ()=>{
+        if(!touchStart.current || !touchEnd.current) return
+        const distance = touchStart.current - touchEnd.current;
+        const isLeftSwipe =  distance < -minSwipeDistance;
+        const isRightSwipe = distance > minSwipeDistance;
+
+        if(isLeftSwipe || isRightSwipe){
+            window.location.replace(`${isLeftSwipe? previousID : nextID}`);
+        }
+
+    }
 
     const handleKeyDown = (e:KeyboardEvent)=>{
         if(e.key == "ArrowLeft"){
@@ -68,7 +93,7 @@ const RecordPage = (record: RecordProps)=>{
     return(
         <Providers>
             <AuthProvider>
-                <div className="w-full min-h-screen record-page">
+                <div className="w-full min-h-screen record-page" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
                     <Header>
                         <ColorBtn index={data.color}/>
                         <EmojiBtn icon={data.emoji}/>

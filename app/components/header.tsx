@@ -1,7 +1,7 @@
 export default function Header({children}:any){
     return(
         <header>
-          <nav className='flex justify-end pr-4'>
+          <nav className='flex justify-end pr-4 pt-4'>
             {children}
           </nav>
         </header>

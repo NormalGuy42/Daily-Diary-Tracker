@@ -23,8 +23,8 @@ function LogIcon(){
 }
 export default function LogoutBtn(){
     function logout(){
-        console.log('done')
         destroyCookie(null, 'token');
+        window.location.reload()
     }
 
     return(
