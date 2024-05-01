@@ -22,7 +22,7 @@ export function formateDay(day:number){
    if(day < 21){
         return 'th';
    }
-   if(lastNumber<4){
+   if(lastNumber<4 && lastNumber > 0 ){
         return adjectives[lastNumber-1];
    }
    return 'th';
