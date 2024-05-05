@@ -21,9 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
         <link rel="icon" href="logo.png" sizes="any" />
-        <body className={inter.className + " min-h-screen"}>
-          {children}
-        </body>  
+          <body className={inter.className + " min-h-screen"} suppressHydrationWarning>
+            <Providers>
+              {children}
+            </Providers>
+          </body>  
     </html>
   )
 }

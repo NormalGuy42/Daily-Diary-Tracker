@@ -1,11 +1,13 @@
+'use client';
+
 import Link from "next/link";
-import "../app/globals.css";
-import ReturnBtn from "@/app/components/buttons/returnBtn";
-import Header from "@/app/components/header";
-import ThemeSwitcher from "@/app/components/buttons/themeBtn";
-import { Providers } from "@/app/providers";
-import LogoutBtn from "@/app/components/buttons/logoutBtn";
-import { AuthProvider } from "@/app/authprovider";
+import "../globals.css";
+import ReturnBtn from "../components/buttons/returnBtn";
+import Header from "../components/header";
+import ThemeSwitcher from "../components/buttons/themeBtn";
+import { Providers } from "../providers";
+import LogoutBtn from "../components/buttons/logoutBtn";
+import { AuthProvider } from "../authprovider";
 
 function ThemeBubble(){
     return(
@@ -42,7 +44,6 @@ function LogoutBubble(){
 }
 export default function Settings(){
     return(
-        <Providers>
             <AuthProvider>
                 <div>
                     <Header>
@@ -56,7 +57,6 @@ export default function Settings(){
                         <LogoutBubble/>
                     </div>
                 </div>
-            </AuthProvider>
-        </Providers>
+            </AuthProvider> 
     );
 }

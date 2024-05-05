@@ -53,6 +53,7 @@ function ThemeSwitcher() {
   if (theme === 'light') {
     return  <CustomButton icon={<SunIcon/>} action={()=>setTheme('dark')}/>
   }
+  // return  <CustomButton icon={<SunIcon/>} action={()=>setTheme('dark')}/>
 
 }
 

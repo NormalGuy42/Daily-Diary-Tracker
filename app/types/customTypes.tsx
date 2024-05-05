@@ -37,3 +37,12 @@ type EmotionLayoutData = {
     records: Array<RecordType>;
 }
 //Layout Data end
+
+type RecordPageData = {
+    recordData: [RecordType];
+    idList: Array<string>;
+}
+interface RecordProps{
+    record: [RecordType];
+    idList: Array<string>;
+}

@@ -1,10 +1,13 @@
-import { Providers } from '@/app/providers'
-import '../app/globals.css'
+'use client';
+
+import { Providers } from '../providers'
+import '../globals.css'
 import { useEffect, useState } from 'react';
 import { setCookie } from 'nookies';
 import { FormEvent } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import StatusMessage from '@/app/components/statusMessage';
+import StatusMessage from '../components/statusMessage';
+import { fetchLogin } from '../api/actions';
 
 function PasswordInput(){
   const [hide,setHide] = useState(true);
@@ -49,49 +52,36 @@ export default function Login(){
       setError(false);
 
       const formData = new FormData(event.currentTarget)
-      const userID = formData.get("userID");
-      const password = formData.get("password");
-  
-    try{
-      const res = await fetch("https://m1000.me/diary/api/auth.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Authorization": `Bearer ${process.env.API_KEY}`,
-        },
-        body: JSON.stringify({"userID":userID,"password":password}),
-      });
-  
-      const result = await res.json();
-    
-      if(result.code !== undefined){
-        if(result.code == 200){
-          setCookie(null, 'token', uuidv4(), {
-              maxAge: 1209600, // Cookie expires after 2 weeks
-              path: '/', // Cookie is accessible across all pages
-            })
-          
-            window.location.href = '/';
-        }else{
-          setError(true);
-          setErrorMessage(result.message);
+      const userID = formData.get("userID") as string;
+      const password = formData.get("password") as string;
 
-          setTimeout(()=>{
-            setIsLoading(false);
-            setError(false);
-            setErrorMessage('');
-          },2000)
+      const {data, isError, error} = await fetchLogin(userID, password)
+  
+      if(!isError){
+        if(data == 200){
+          setCookie(null, 'token', uuidv4(), {
+            maxAge: 1209600, // Cookie expires after 2 weeks
+            path: '/', // Cookie is accessible across all pages
+          })
+        
+          window.location.href = '/';
         }
+        else{
+          console.log(error)
+        }
+      }else{
+        setError(true);
+        setErrorMessage(error);
+
+        setTimeout(()=>{
+          setIsLoading(false);
+          setError(false);
+          setErrorMessage('');
+        },2000)
       }
-          
-    }catch(error){
-      console.error("Error submitting form",error)
-    }
   };
 
     return(
-      <Providers>
         <div className="w-full min-h-screen flex items-center justify-center">
             <div className='px-4 pb-32 form-container'>
             <h1 className='title max-[340px]:text-3xl'>Welcome back</h1>
@@ -111,6 +101,5 @@ export default function Login(){
             </form>              
           </div>
         </div>
-      </Providers>
     )
 }

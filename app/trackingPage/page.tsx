@@ -1,12 +1,15 @@
-import '../app/globals.css'
-import Header from '@/app/components/header';
-import ReturnBtn from '@/app/components/buttons/returnBtn';
+'use client';
+
+import '../globals.css'
+import Header from '../components/header';
+import ReturnBtn from '../components/buttons/returnBtn';
 import { useEffect, useState } from 'react';
-import { formatDate } from '@/app/components/methods/date';
+import { formatDate } from '../components/methods/date';
 import Link from 'next/link';
-import { getEmotionLayout } from '@/app/components/methods/methods';
-import { Providers } from '@/app/providers';
-import { AuthProvider } from '@/app/authprovider';
+import { getEmotionLayout } from '../components/methods/methods';
+import { Providers } from '../providers';
+import { AuthProvider } from '../authprovider';
+import { fetchAll } from '../api/actions';
 
 function TrackingSquare(props:{recordData:RecordType,index:number}){
     let data = props.recordData;
@@ -53,27 +56,24 @@ function EmptyTracking(){
 }
 export default function TrackingPage(){
     let [data,setData] = useState<Array<EmotionLayoutData>>([]);
+
+    const getData = async ()=>{
+        const { data, isError, error } = await fetchAll();
+    
+        if(!isError){
+          setData(getEmotionLayout(data))
+        }
+        else{
+          console.log(error)
+        }
+      }
     
     useEffect(()=>{
         //Get data from api
-        fetch("https://m1000.me/diary/api/api-diary.php",{
-            headers:{
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Authorization": `Bearer ${process.env.API_KEY}`,
-            }
-        }
-        
-        )
-        .then((res)=>res.json())
-        .then((data)=>{
-            let fetch: Array<RecordType> = data
-            setData(getEmotionLayout(fetch))
-        });
+        getData()
       },[]);
 
     return(
-        <Providers>
             <AuthProvider>
                 <div className="w-full min-h-screen">
                     <Header>
@@ -88,6 +88,5 @@ export default function TrackingPage(){
                         }
                 </div>
             </AuthProvider>
-        </Providers>
     )
 }

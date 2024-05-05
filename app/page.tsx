@@ -8,6 +8,7 @@ import { Providers } from './providers';
 import { parseCookies, destroyCookie } from 'nookies';
 import { AuthProvider } from './authprovider';
 import StatusMessage from '@/app/components/statusMessage';
+import { fetchAll } from './api/actions';
 
 function Box(props:{item: React.ReactElement,page: string,}){
   
@@ -39,22 +40,10 @@ function Home() {
     {'messages':["Nice night", "Have sweet dreams", "Great day", "Tomorrow will look great", "Goodnight", "Still looking good!"],'interval':[19,23]},
   ]
 
-  useEffect(()=>{
-    //Check if user logged in
-    
-    //Get data from api
-    fetch("https://m1000.me/diary/api/api-diary.php",{
-        headers:{
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Authorization": `Bearer ${process.env.API_KEY}`,
-        }
-    }
-    
-    )
-    .then((res)=>res.json())
-    .then((data)=>{
-      //Prepare information
+  const getData = async ()=>{
+    const { data, isError, error } = await fetchAll();
+
+    if(!isError){
       setData(data);
       setGreeting(getGreeting());
 
@@ -74,9 +63,14 @@ function Home() {
           setFlashMessage(null);
         }, 2000);
       }
-    });
+    }
+    else{
+      console.log(error)
+    }
+  }
 
-    
+  useEffect(()=>{
+    getData()
   },[]);
   
   function getGreeting():string{
@@ -168,7 +162,6 @@ function Home() {
   }
   
   return (
-    <Providers>
       <AuthProvider>
       <div>
         <Header>
@@ -186,7 +179,6 @@ function Home() {
         </div>
       </div>
       </AuthProvider>
-    </Providers>
   )
 }
 export default Home;
