@@ -64,31 +64,30 @@ const RecordPage = ()=>{
     const touchEnd = useRef<number | null>(null);
     const minSwipeDistance = 50;
 
+    //For mobile accessibility
+    const onTouchStart = (e: React.TouchEvent)=>{
+        touchEnd.current = null;
+        touchStart.current = e.targetTouches[0].clientX;
+    }
+    const onTouchMove = (e: React.TouchEvent)=>{
+        touchEnd.current = e.targetTouches[0].clientX;;
+    }
+    const onTouchEnd = ()=>{
+        if(!touchStart.current || !touchEnd.current) return
+        const distance = touchStart.current - touchEnd.current;
+        const isLeftSwipe =  distance < -minSwipeDistance;
+        const isRightSwipe = distance > minSwipeDistance;
+
+        if(isLeftSwipe || isRightSwipe){
+            window.location.replace(`${isLeftSwipe? previousID.current : nextID.current}`);
+        }
+
+    }
+
     useEffect(()=>{      
         getData()
 
-        //For mobile accessibility
-        const onTouchStart = (e: React.TouchEvent)=>{
-            touchEnd.current = null;
-            touchStart.current = e.targetTouches[0].clientX;
-        }
-        const onTouchMove = (e: React.TouchEvent)=>{
-            touchEnd.current = e.targetTouches[0].clientX;;
-        }
-        const onTouchEnd = ()=>{
-            if(!touchStart.current || !touchEnd.current) return
-            const distance = touchStart.current - touchEnd.current;
-            const isLeftSwipe =  distance < -minSwipeDistance;
-            const isRightSwipe = distance > minSwipeDistance;
-
-            if(isLeftSwipe || isRightSwipe){
-                window.location.replace(`${isLeftSwipe? previousID : nextID}`);
-            }
-
-        }
-
         const handleKeyDown = (e:KeyboardEvent)=>{
-            console.log(previousID,nextID)
             if(e.key == "ArrowLeft"){
                 window.location.replace(`${previousID.current}`);
             }else if(e.key == "ArrowRight"){
@@ -96,21 +95,9 @@ const RecordPage = ()=>{
             }
         }
         document.addEventListener("keydown",handleKeyDown,true)
-        // document.addEventListener("touchstart",onTouchStart,true)
-        // document.addEventListener("touchmove",onTouchMove,true)
-        document.addEventListener("onTouchEnd",onTouchEnd,true)
-
 
     },[])
 
-
-    
-    //Get ID list
-    // const [previousID,setPreviousID] = useState('');
-    // const [nextID,setNextDayID] = useState('');
-    
-
-    
 
     return(
         <AuthProvider>
@@ -118,7 +105,7 @@ const RecordPage = ()=>{
                 isLoading? 
                     <div></div>
                 :
-                <div className="w-full min-h-screen record-page">
+                <div className="w-full min-h-screen record-page" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
                     <Header>
                         <ColorBtn index={data.color}/>
                         <EmojiBtn icon={data.emoji}/>
